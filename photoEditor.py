@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import messagebox
 from PIL import Image, ImageEnhance, ImageFilter, WebPImagePlugin, ImageTk
 import os
 
@@ -134,7 +135,8 @@ window = tk.Tk()
 
 class ImageCovertor:
     def __init__(self,window):
-        #self.window = window
+        self.window = window
+        self.quit  = window
         self.count = 0
         self.entry = tk.Entry(window)
         self.entry.pack(pady=20)
@@ -146,7 +148,10 @@ class ImageCovertor:
         self.button = tk.Button(window, text="Submit", command=self.changeName)
         self.button.pack(pady=0)
 
-        self.button = tk.Button(window, text="Quit", command=window.quit)
+        self.button = tk.Button(window, text="Quit", command=self.close)
+        self.button.pack(pady=0)
+
+        self.button = tk.Button(window, text="Convert all with no name changes", command=self.convertAllNoNameChange)
         self.button.pack(pady=0)
 
         self.canvas = tk.Canvas(window, width=400, height=400)
@@ -223,7 +228,18 @@ class ImageCovertor:
             print("oops daisy")
         #    messagebox.showerror("Error", f"An error occurred while loading the image: {e}")      
 
-        
+    def close(self):
+        response=messagebox.askyesno('Exit','Are you sure you want to exit?')
+        if response:
+            self.window.destroy()
+            
+            
+    def complete(self):
+        response=messagebox.askyesno('Exit','Converted images saved too' " " + "\n "+ str(pathOut) + " "+ "\nDo you want to quit?") 
+        if response:
+            self.window.destroy()     
+
+   
     
     def changeName(self):  # changes the name of the image before converting
         newName=self.entry.get()
@@ -236,10 +252,69 @@ class ImageCovertor:
         self.entry.insert = "Enter Name"
         self.show_next_image()
 
-    def clicked(self):
-        self.entry.configure(state="normal")
-        self.entry.delete(0, tk.END)
-        self.entry.unbind('<Button-1', self.clicked)
+
+    def convertAllNoNameChange(self):
+        AllCount = 0
+        for filename in os.listdir(path):
+            
+            print(filename)
+            image_path = self.image_paths[AllCount]
+            clean_name = os.path.splitext(filename)
+            img = Image.open(image_path)
+            edit = img.filter(ImageFilter.SHARPEN).convert("RGB")
+            edit.save(f'.{pathOut}/{clean_name}.jpg')
+            print(f'.{pathOut}/{clean_name}.jpg')
+            AllCount += 1
+        
+        self.complete()
+
+        
+        
+# for filename in os.listdir(path):
+#     img = Image.open(f"{path}/{filename}")
+    
+#     edit = img.filter(ImageFilter.SHARPEN).convert("RGB")
+
+#      clean_name = os.path.splitext(filename)[0]
+
+#     window = Tk()
+   
+#     def new_name():
+#         newName = entry.get()
+#         return newName
+    
+#     def nextImg():
+#         window.quit
+
+#     submit = Button(window,text="Submit",command=lambda: [new_name(),nextImg()])
+#     submit.pack(side = RIGHT)
+
+
+#     window.geometry("750x450")
+#     entry = Entry()
+#     entry.config(font=('Name',50))
+#     entry.pack()
+#     entry.insert(0,"Name Image")
+#     window.mainloop()
+ 
+
+#    # clean_name = input(submit)
+
+
+#     imgName = submit(new_name(return))
+
+#     edit.save(f'.{pathOut}/{new_name}_edited.jpg')
+
+    
+
+
+    
+
+
+#     def clicked(self):
+#         self.entry.configure(state="normal")
+#         self.entry.delete(0, tk.END)
+#         self.entry.unbind('<Button-1', self.clicked)
     
 
     
@@ -249,6 +324,7 @@ window.title("AI Webmp to Jpg Convertor")
 window.geometry("750x750")
 
 app = ImageCovertor(window)
+
 
 window.mainloop()
 
