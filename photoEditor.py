@@ -263,7 +263,8 @@ class ImageCovertor:
             img = Image.open(image_path)
             edit = img.filter(ImageFilter.SHARPEN).convert("RGB")
             edit.save(f'.{pathOut}/{clean_name}.jpg')
-            print(f'.{pathOut}/{clean_name}.jpg')
+            print(f'.{pathOut}/{clean_name}.jpg') 
+            #doesnt work without the .jpg for some reason
             AllCount += 1
         
         self.complete()
